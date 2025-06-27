@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html>
+   <title>PCAN MONSTER WAR - Home</title>
+  <script src="https://unpkg.com/html5-qrcode"></script>
+  <style>
+    body { font-family: 'Courier New', monospace; text-align: center; }
+    .monster-card { border: 2px solid #333; padding: 20px; margin-top: 20px; display: inline-block; }
+    .effect-icon {
+      position: absolute;
+      font-size: 64px;
+      pointer-events: none;
+      z-index: 999;
+      transition: transform 0.6s linear, opacity 0.6s ease-out;
+    }
+    @keyframes shake {
+      0% { transform: translate(0px, 0px); }
+      25% { transform: translate(4px, -4px); }
+      50% { transform: translate(-4px, 4px); }
+      75% { transform: translate(4px, 4px); }
+      100% { transform: translate(0px, 0px); }
+    }
+    .shake {
+      animation: shake 0.3s ease-in-out;
+    }
+    .monster-detail {
+      border: 2px solid #555;
+      padding: 20px;
+      margin: 20px auto;
+      width: 300px;
+      text-align: center;
+      background: #f0f0f0;
+    }
+    #game-screen { display: none; }
+  </style>
+</head>
+<body>
+  <!-- Home Screen -->
+  <div id="home-screen">
+    <h1>🎮 ยินดีต้อนรับสู่ PCAN MONSTER WAR 🎮</h1>
+    <p>สแกน QR เพื่อเริ่มการสะสมและต่อสู้!</p>
+    <button onclick="goToGame()">▶️ PLAY</button>
+  </div>
+
+  <!-- Game Screen -->
+  <div id="game-screen">
+    <h1>🎮 PCAN MONSTER WAR 🎮</h1>
+    <div id="qr-reader" style="width: 300px; margin: auto;"></div>
+    <div id="result" class="monster-card" style="display: none;"></div>
+    <div id="battle-scene" style="display: flex; justify-content: space-between; align-items: center; padding: 20px;">
+      <div id="player-side" style="text-align: center; position: relative;"></div>
+      <div id="battle-log" style="flex: 1; padding: 10px; font-family: monospace;"></div>
+      <div id="enemy-side" style="text-align: center; position: relative;"></div>
+    </div>
+    <div id="collection" style="margin-top: 20px;"></div>
+    <div id="monster-detail-view" style="display:none;"></div>
+    <button onclick="showCollection()">📖 ดูมอนสเตอร์ที่เคยได้</button>
+    <button onclick="clearCollection()">🗑️ ลบคอลเลกชันทั้งหมด</button>
+  </div>
+
+  <script>
+    function goToGame() {
+      document.getElementById("home-screen").style.display = "none";
+      document.getElementById("game-screen").style.display = "block";
+      startScanner();
+    }
+  </script>
+
+  <script>
+    let monsterDatabase = {};
+
+    fetch("monsters.json")
+      .then(res => res.json())
+      .then(data => {
+        monsterDatabase = data;
+        console.log("📦 Monster data loaded!", monsterDatabase);
+        startScanner();
+      })
+      .catch(err => {
+        console.error("⚠️ โหลด monsters.json ไม่สำเร็จ:", err);
+        alert("ไม่สามารถโหลดข้อมูลมอนสเตอร์ได้");
+      });
+
+    const advantage = {
+      fire: "earth",
+      earth: "lightning",
+      lightning: "water",
+      water: "fire",
+      dark: "light",
+      light: "dark"
+    };
+
+    function getElementIcon(element) {
+      switch (element.toLowerCase()) {
+        case "fire": return "🔥";
+        case "water": return "🌊";
+        case "earth": return "🌱";
+        case "lightning": return "⚡";
+        case "dark": return "☠️";
+        case "light": return "☀️";
+        default: return "❓";
+      }
+    }
+
+    function feedMonster(name) {
+  alert(`🍖 ${name} อร่อย!`);
+}
+
+function playWithMonster(name) {
+  alert(`🎲 เล่นกับ ${name}!`);
+}
+
+function showInfo(monsterKey) {
+  const monster = monsterDatabase[monsterKey];
+  if (!monster) {
+    alert("ไม่พบข้อมูลมอนสเตอร์");
+    return;
+  }
+  alert(
+    `📜 ${monster.name}
+HP: ${monster.hp}
+MP: ${monster.mp}
+ATK: ${monster.atk}
+Element: ${monster.element}
+Description: ${monster.description || 'ไม่มีข้อมูล'}
+Type: ${monster.type || 'ไม่มีข้อมูล'}
+Level: ${monster.level || 'ไม่ระบุ'}`
+  );
+}
+
+function closeDetail() {
+  document.getElementById('monster-detail-view').style.display = 'none';
+}
+
+
+    function calcDamage(attacker, defender) {
+      let base = Math.floor(Math.random() * attacker.atk);
+      if (advantage[attacker.element] === defender.element) {
+        base = Math.floor(base * 1.5);
+      }
+      return base;
+    }
+
+    function launchEffect(fromId, toId, element) {
+      const from = document.getElementById(fromId);
+      const to = document.getElementById(toId);
+      const icon = document.createElement("span");
+      icon.className = "effect-icon";
+      icon.textContent = getElementIcon(element);
+
+      const fromRect = from.getBoundingClientRect();
+      const toRect = to.getBoundingClientRect();
+      icon.style.left = fromRect.left + fromRect.width / 2 + "px";
+      icon.style.top = fromRect.top + fromRect.height / 2 + "px";
+      icon.style.position = "fixed";
+
+      document.body.appendChild(icon);
+
+      const dx = toRect.left + toRect.width / 2 - (fromRect.left + fromRect.width / 2);
+      const dy = toRect.top + toRect.height / 2 - (fromRect.top + fromRect.height / 2);
+
+      requestAnimationFrame(() => {
+        icon.style.transform = `translate(${dx}px, ${dy}px)`;
+        icon.style.opacity = 0;
+      });
+
+      setTimeout(() => {
+        icon.remove();
+        to.classList.add("shake");
+        setTimeout(() => to.classList.remove("shake"), 300);
+      }, 600);
+    }
+
+    function saveMonster(monsterKey) {
+      let collection = JSON.parse(localStorage.getItem("monsterCollection")) || [];
+      if (!collection.includes(monsterKey)) {
+        collection.push(monsterKey);
+        localStorage.setItem("monsterCollection", JSON.stringify(collection));
+      }
+    }
+
+    function showMonsterDetail(monsterKey) {
+  const monster = monsterDatabase[monsterKey];
+  const detailDiv = document.getElementById("monster-detail-view");
+  detailDiv.style.display = "block";
+  detailDiv.innerHTML = `
+    <div class='monster-detail'>
+      <h2>${monster.name}</h2>
+      <img src="${monster.image}" width="150"><br>
+      HP: ${monster.hp} | MP: ${monster.mp} | ATK: ${monster.atk}<br>
+      Element: ${getElementIcon(monster.element)}<br><br>
+      <button onclick="feedMonster('${monster.name}')">🍗 ให้อาหาร</button>
+      <button onclick="playWithMonster('${monster.name}')">🎮 เล่นด้วย</button>
+      <button onclick="showInfo('${monsterKey}')">ℹ️ Info</button><br><br>
+      <button onclick="closeDetail()">⬅️ กลับ</button>
+    </div>
+  `;
+}
+
+
+    function deleteOne(monsterKey) {
+      let collection = JSON.parse(localStorage.getItem("monsterCollection")) || [];
+      collection = collection.filter(key => key !== monsterKey);
+      localStorage.setItem("monsterCollection", JSON.stringify(collection));
+      showCollection();
+    }
+
+    function updateStats(win) {
+      let stats = JSON.parse(localStorage.getItem("battleStats")) || { win: 0, lose: 0 };
+      if (win) stats.win++;
+      else stats.lose++;
+      localStorage.setItem("battleStats", JSON.stringify(stats));
+    }
+
+    function getStatsText() {
+      const stats = JSON.parse(localStorage.getItem("battleStats")) || { win: 0, lose: 0 };
+      return `<p>📊 ชนะ: ${stats.win} | แพ้: ${stats.lose}</p>`;
+    }
+
+    function showMonster(data) {
+      const key = data.trim().toUpperCase();
+      const monster = monsterDatabase[key];
+      const resultDiv = document.getElementById("result");
+      if (!monster) {
+        resultDiv.innerHTML = `<h2>❌ QR ไม่รู้จัก</h2>`;
+        resultDiv.style.display = "block";
+        return;
+      }
+      resultDiv.innerHTML = `
+        <h2>🎉 You Got: ${monster.name}!</h2>
+        <img src="${monster.image}" width="150"><br>
+        HP: ${monster.hp} | MP: ${monster.mp} | ATK: ${monster.atk}<br>
+        Element: <strong>${getElementIcon(monster.element)}</strong><br>
+        <button onclick="startBattle('${key}')">⚔️ สู้กับ AI</button>
+        <button onclick="restartScanner()">🔄 สแกนใหม่</button>
+      `;
+      resultDiv.style.display = "block";
+      saveMonster(key);
+    }
+
+    function startScanner() {
+      const qrCodeSuccessCallback = (decodedText) => {
+        console.log("QR scanned:", decodedText);
+        html5QrcodeScanner.clear();
+        showMonster(decodedText);
+      };
+
+      const html5QrcodeScanner = new Html5QrcodeScanner(
+        "qr-reader", { fps: 10, qrbox: 250 }
+      );
+      html5QrcodeScanner.render(qrCodeSuccessCallback);
+    }
+
+    function restartScanner() {
+      location.reload();
+    }
+
+    function showCollection() {
+      const container = document.getElementById("collection");
+      container.innerHTML = "<h2>🧾 Monster Collection</h2>" + getStatsText();
+      const collection = JSON.parse(localStorage.getItem("monsterCollection")) || [];
+
+      if (collection.length === 0) {
+        container.innerHTML += "<p>ยังไม่มีมอนสเตอร์เลย!</p>";
+        return;
+      }
+
+      collection.forEach(key => {
+        const mon = monsterDatabase[key];
+        if (mon) {
+          container.innerHTML += `
+            <div style="border:1px solid #aaa; padding:10px; margin:5px; display: inline-block;">
+              <strong>${mon.name} ${getElementIcon(mon.element)}</strong><br>
+              <img src="${mon.image}" width="100"><br>
+              HP: ${mon.hp} | MP: ${mon.mp}<br>
+              <button onclick="startBattle('${key}')">⚔️ ใช้สู้!</button>
+              <button onclick="showMonsterDetail('${key}')">🔍 ดูตัวนี้</button>
+              <button onclick="deleteOne('${key}')">🗑️ ลบ</button>
+            </div>
+          `;
+        }
+      });
+    }
+
+    function clearCollection() {
+      if (confirm("แน่ใจนะว่าจะลบคอลเลกชันทั้งหมด?")) {
+        localStorage.removeItem("monsterCollection");
+        localStorage.removeItem("battleStats");
+        document.getElementById("collection").innerHTML = "";
+      }
+    }
+
+    function startBattle(monsterKey) {
+      const player = { ...monsterDatabase[monsterKey] };
+      const keys = Object.keys(monsterDatabase);
+      const enemyKey = keys[Math.floor(Math.random() * keys.length)];
+      const enemy = { ...monsterDatabase[enemyKey] };
+
+      player.hp = parseInt(player.hp);
+      enemy.hp = parseInt(enemy.hp);
+
+      document.getElementById("player-side").innerHTML = `
+        <h3>${player.name} (${getElementIcon(player.element)})</h3>
+        <img src="${player.image}" width="150"><br>
+        HP: <span id="player-hp">${player.hp}</span>
+      `;
+      document.getElementById("enemy-side").innerHTML = `
+        <h3>${enemy.name} (${getElementIcon(enemy.element)})</h3>
+        <img src="${enemy.image}" width="150"><br>
+        HP: <span id="enemy-hp">${enemy.hp}</span>
+      `;
+
+      const logDiv = document.getElementById("battle-log");
+      logDiv.innerHTML = `<h3>⚔️ เริ่มการต่อสู้!</h3><hr>`;
+
+      const interval = setInterval(() => {
+        if (player.hp <= 0 || enemy.hp <= 0) {
+          clearInterval(interval);
+          const win = player.hp > 0;
+          updateStats(win);
+
+          if (win) {
+            logDiv.innerHTML += `<p><strong>🏆 คุณชนะ!</strong></p>`;
+            document.getElementById("player-side").innerHTML += `<div style='font-size: 24px; color: gold;'>WINNER 🥇</div>`;
+          } else {
+            logDiv.innerHTML += `<p><strong>💀 คุณแพ้...</strong></p>`;
+            document.getElementById("enemy-side").innerHTML += `<div style='font-size: 24px; color: gold;'>WINNER 🥇</div>`;
+          }
+          logDiv.innerHTML += `<button onclick=\"restartScanner()\">🔄 สแกนใหม่</button>`;
+          return;
+        }
+
+        const playerDmg = calcDamage(player, enemy);
+        enemy.hp = Math.max(0, enemy.hp - playerDmg);
+        launchEffect("player-side", "enemy-side", player.element);
+        document.getElementById("enemy-hp").textContent = enemy.hp;
+        logDiv.innerHTML += `<p>${player.name} โจมตี ${enemy.name} -${playerDmg} HP</p>`;
+
+        if (enemy.hp <= 0) return;
+
+        const enemyDmg = calcDamage(enemy, player);
+        player.hp = Math.max(0, player.hp - enemyDmg);
+        launchEffect("enemy-side", "player-side", enemy.element);
+        document.getElementById("player-hp").textContent = player.hp;
+        logDiv.innerHTML += `<p>${enemy.name} โจมตี ${player.name} -${enemyDmg} HP</p>`;
+      }, 1000);
+    }
+  </script>
+</body>
+</html>

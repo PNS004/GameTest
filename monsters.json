@@ -1,0 +1,116 @@
+{
+  "QR001": {
+    "name": "Phoenix",
+    "hp": 70,
+    "mp": 80,
+    "atk": 22,
+    "element": "fire",
+    "image": "https://raw.githubusercontent.com/PNS004/GameTest/main/1.jpg",
+    "description": "นกฟีนิกซ์ในตำนานที่เกิดใหม่จากเถ้าถ่าน มีความสารถในด้านเวทมนตร์ไฟ",
+    "type": "ปกติ"
+  },
+  "QR002": {
+    "name": "RiverDragon",
+    "hp": 120,
+    "mp": 30,
+    "atk": 28,
+    "element": "water",
+    "image": "https://raw.githubusercontent.com/PNS004/GameTest/main/2.jpg",
+    "description": "มังกรวารี ผู้พิทักษ์แม่น้ำที่มีพลังมหาศาลเมื่อพ่นนํ้าออกมาสามารถควบคุมความแรงและอุณหภูมิของนํ้าที่ปล่อยออกมาได้",
+    "type": "ปกติ"
+  },
+  "QR003": {
+    "name": "EarthDragon",
+    "hp": 110,
+    "mp": 40,
+    "atk": 26,
+    "element": "earth",
+    "image": "https://raw.githubusercontent.com/PNS004/GameTest/main/3.jpg",
+    "description": "มังกรดินที่มีพลังมหาศาล ฉายาผู้พิทักษ์ปัฐพี",
+    "type": "ปกติ"
+  },
+  "QR004": {
+    "name": "Werewolf",
+    "hp": 110,
+    "mp": 40,
+    "atk": 24,
+    "element": "earth",
+    "image": "https://raw.githubusercontent.com/PNS004/GameTest/main/4.jpg",
+    "description": "มนุษย์หมาป่าต้องคำสาปทีจากหมูบ้านDrywolf",
+    "type": "ปกติ"
+  },
+    "QR005": {
+    "name": "Cerberus",
+     "hp": 100, 
+     "mp": 50,
+     "element":"fire",
+     "atk": 25,
+     "image":"https://raw.githubusercontent.com/PNS004/GameTest/main/5.jpg",
+     "description": "สุนัขสามหัวในตำนานที่เฝ้าประตูยมโลก ร่างวัยเด็ก",
+     "type": "ปกติ"
+},
+    "QR006": {
+    "name": "LeafBeast",
+     "hp": 120,
+     "mp": 30,
+     "element":"earth",
+     "atk": 20,
+     "image": "https://raw.githubusercontent.com/PNS004/GameTest/main/6.jpg",
+     "description": "อสูรป่าไม้ที่มีรส่วนประกอบร่างกายจากสัตว์ป่าและพืช ฉายา ผู้พิทักษ์ผืนป่า",
+     "type": "ปกติ"
+},
+    "QR007": {
+        "name": "Griffin",
+        "hp": 130, 
+        "mp": 20, 
+        "element":"lightning", 
+        "atk": 27,
+        "image": "https://raw.githubusercontent.com/PNS004/GameTest/main/7.jpg",
+        "description": "กริฟฟินในตำนานที่มีร่างกายเป็นสิงโตและปีกเป็นนกอินทรีความเร็วเป็นกรด",
+        "type": "ปกติ"
+},
+    "QR008": {
+        "name": "Firewolf", 
+        "hp": 90, 
+        "mp": 60, 
+        "element":"fire", 
+        "atk": 23,
+        "image": "https://raw.githubusercontent.com/PNS004/GameTest/main/8.jpg",
+        "description": "หมาป่าไฟจากภูเขาไฟ Luca หายใจเป็นไฟ และพละกำลังมากกว่ามนุษย์ทั่วไป",
+        "type": "ปกติ"
+},
+    "QR009": {
+        "name": "Reaper", 
+        "hp": 50, 
+        "mp": 100, 
+        "element":"dark", 
+        "atk": 35,
+        "image": "https://raw.githubusercontent.com/PNS004/GameTest/main/9.jpg",
+        "description": "ยมทูตแห่งความตายที่มีดาบคมกริบและพลังเวทมนตร์มืด",
+        "type": "ปกติ"
+},
+    "QR010": {
+        "name": "ShadowBeast", 
+        "hp": 150, 
+        "mp": 100, 
+        "element":"dark", 
+        "atk": 30,
+        "image": "https://raw.githubusercontent.com/PNS004/GameTest/main/10.jpg",
+        "description": "อสูรเงามืดที่มีพลังเวทมนตร์มืดและความสามารถในการล่องหน",
+        "type": "ลึกลับ"
+},
+  "QR011": {
+        "name": "Melemont", 
+        "hp": 250, 
+        "mp": 20, 
+        "element":"dark", 
+        "atk": 30,
+        "image": "https://raw.githubusercontent.com/PNS004/GameTest/main/11.jpg",
+        "description": "เมเลมอนต์ อสูรเครื่องจักรแห่งความมืดที่มีพลังเวทมนตร์สูงและความสามารถในการควบคุมสนามแม่เหล็ก",
+        "type": "ลึกลับ"
+}
+
+
+
+
+}
